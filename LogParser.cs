@@ -329,6 +329,10 @@ namespace Parser
             excelBook.SaveAs(resultPath);
             excelBook.Close();
             excel.Quit();
+
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelSheet);
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(excelBook);
+            System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
         }
 
         private string logPath_;
