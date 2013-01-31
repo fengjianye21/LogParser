@@ -163,10 +163,11 @@ namespace Parser
 
     class LogParser
     {
-        public LogParser(string logPath, string resultPath)
+        public LogParser(string logPath, string resultPath, bool simpleMode)
         {
             logPath_ = logPath;
             resultPath_ = resultPath;
+            simpleMode_ = simpleMode;
 
             if (!File.Exists(logPath_))
             {
@@ -276,11 +277,17 @@ namespace Parser
             int idx = paraAndCost.LastIndexOf('.');
             tickcntBegin = Convert.ToUInt32(paraAndCost.Substring(++idx));
 
+            uint tick = tickcntEnd - tickcntBegin;
+            if (0 == tick && simpleMode_)
+            {
+                return;
+            }
+
             if (!results_.ContainsKey(beginGroups[1].Value))
             {
                 results_.Add(beginGroups[1].Value, new Para2Cost());
             }
-            results_[beginGroups[1].Value].Add(0 == idx ? "default" : paraAndCost.Substring(0, idx), tickcntEnd - tickcntBegin);
+            results_[beginGroups[1].Value].Add(0 == idx ? "default" : paraAndCost.Substring(0, idx), tick);
         }
 
         /// <summary>
@@ -337,6 +344,7 @@ namespace Parser
 
         private string logPath_;
         private string resultPath_;
+        private bool simpleMode_;
         private Dictionary<string, Para2Cost> results_;
     }
 }
